@@ -1,10 +1,14 @@
 import type { CreateStoryParams, Story, StoryRepository } from "./domain";
+import type { OpenAIService } from "~/infrastructure/ai/openai";
 
 export class CreateStoryUseCase {
-  constructor(private storyRepository: StoryRepository) {}
+  constructor(
+    private storyRepository: StoryRepository,
+    private aiService: OpenAIService
+  ) {}
 
-  async execute(params: CreateStoryParams): Promise<Story> {
-    // 1. Validate inputs (Basic validation, more complex validation can be done with Zod in the controller)
+  async execute(params: CreateStoryParams): Promise<{ story: Story; stream: AsyncIterable<string> }> {
+    // 1. Validate inputs
     if (!params.childName) throw new Error("Child name is required");
     if (params.childAge < 0) throw new Error("Invalid age");
 
@@ -15,18 +19,20 @@ export class CreateStoryUseCase {
       childAge: params.childAge,
       interests: params.interests,
       theme: params.theme || "pixar",
-      status: 'draft',
-      title: `Cuento para ${params.childName}`, // Placeholder title
+      status: 'generating', // Mark as generating
+      title: `Cuento para ${params.childName}`,
       content: "",
       isPublic: false,
-      // Optional fields
-      coverImageUrl: undefined,
-      audioUrl: undefined,
     });
 
-    // 3. Trigger Async Generation (This would be a background job or just return the draft to start streaming)
-    // For now, we just return the draft. The controller will trigger the generation.
+    // 3. Start Streaming
+    const stream = this.aiService.generateStoryStream({
+      childName: params.childName,
+      childAge: params.childAge,
+      interests: params.interests,
+      theme: params.theme || "pixar",
+    });
 
-    return story;
+    return { story, stream };
   }
 }

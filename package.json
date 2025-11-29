@@ -6,7 +6,9 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@react-router/node": "^7.9.2",
@@ -15,13 +17,16 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "isbot": "^5.1.31",
+    "openai": "^6.9.1",
     "postgres": "^3.4.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router": "^7.9.2"
+    "react-router": "^7.9.2",
+    "remix-utils": "^9.0.0"
   },
   "devDependencies": {
     "@react-router/dev": "^7.9.2",
+    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.13",
     "@types/node": "^22.19.1",
     "@types/react": "^19.1.13",

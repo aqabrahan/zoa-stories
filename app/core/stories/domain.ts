@@ -2,7 +2,7 @@ export type StoryStatus = 'draft' | 'generating' | 'completed' | 'failed';
 
 export interface Story {
   id: string;
-  userId: string;
+  userId: string | null; // Nullable for guests
   title: string;
   content: string;
   childName: string;
@@ -18,7 +18,7 @@ export interface Story {
 }
 
 export interface CreateStoryParams {
-  userId: string;
+  userId?: string | null; // Optional
   childName: string;
   childAge: number;
   interests: string[];

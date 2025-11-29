@@ -25,7 +25,7 @@ export default function NewStoryRoute() {
               name="childName"
               id="childName"
               required
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-900"
               placeholder="Ej: Sofía"
             />
           </div>
@@ -41,7 +41,7 @@ export default function NewStoryRoute() {
               required
               min="1"
               max="12"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-900"
               placeholder="Ej: 5"
             />
           </div>
@@ -55,7 +55,7 @@ export default function NewStoryRoute() {
               name="interests"
               id="interests"
               required
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-900"
               placeholder="Ej: Dinosaurios, Espacio, Pizza"
             />
           </div>
@@ -67,7 +67,7 @@ export default function NewStoryRoute() {
             <select
               name="theme"
               id="theme"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-900"
             >
               <option value="pixar">Estilo 3D (Pixar)</option>
               <option value="watercolor">Acuarela</option>

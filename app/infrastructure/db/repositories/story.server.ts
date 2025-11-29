@@ -9,6 +9,9 @@ const mapToDomain = (row: typeof stories.$inferSelect): Story => ({
   interests: row.interests as string[], // Cast array type
   status: row.status as Story['status'],
   title: row.title ?? "",
+  theme: row.theme || "pixar",
+  coverImageUrl: row.coverImageUrl || undefined,
+  audioUrl: row.audioUrl || undefined,
   content: row.content ?? "",
   // Ensure dates are Date objects
   createdAt: new Date(row.createdAt),
@@ -18,7 +21,7 @@ const mapToDomain = (row: typeof stories.$inferSelect): Story => ({
 export class DrizzleStoryRepository implements StoryRepository {
   async create(storyData: Omit<Story, 'id' | 'createdAt' | 'updatedAt'>): Promise<Story> {
     const [inserted] = await db.insert(stories).values({
-      userId: storyData.userId,
+      userId: storyData.userId || null, // Ensure null if undefined/empty
       childName: storyData.childName,
       childAge: storyData.childAge,
       interests: storyData.interests,
