@@ -55,7 +55,7 @@ export class DrizzleStoryRepository implements StoryRepository {
     return mapToDomain(updated);
   }
 
-  async findByUser(userId: string): Promise<Story[]> {
+  async findByUserId(userId: string): Promise<Story[]> {
     const rows = await db
       .select()
       .from(stories)

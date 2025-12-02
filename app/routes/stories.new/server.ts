@@ -10,20 +10,40 @@ const aiService = new OpenAIService();
 // We only need the repository for creation now, generation happens later
 const createStoryUseCase = new CreateStoryUseCase(storyRepository, aiService);
 
+import { getAuthenticatedUser } from "~/core/auth/auth.server";
+import { DrizzleUserRepository } from "~/infrastructure/db/repositories/user.server";
+
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
 
   const childName = formData.get("childName") as string;
   const childAge = Number(formData.get("childAge"));
-  const interests = (formData.get("interests") as string).split(",").map(s => s.trim());
+  const interests = (formData.get("interests") as string).split(",").map((s) => s.trim());
   const theme = formData.get("theme") as string;
 
-  // Mock User ID (null for guest)
-  const userId = null;
+  const storyRepository = new DrizzleStoryRepository();
+  const aiService = new OpenAIService();
+  const createStory = new CreateStoryUseCase(storyRepository, aiService);
+
+  const user = await getAuthenticatedUser(request);
+  const userId = user?.id || null;
+
+  if (userId && user?.email) {
+    const userRepository = new DrizzleUserRepository();
+    const existingProfile = await userRepository.findById(userId);
+
+    if (!existingProfile) {
+      await userRepository.create({
+        id: userId,
+        email: user.email,
+        creditsBalance: 2, // Default credits
+      });
+    }
+  }
 
   try {
     // We only want the story object to redirect
-    const { story } = await createStoryUseCase.execute({
+    const { story } = await createStory.execute({
       userId,
       childName,
       childAge,

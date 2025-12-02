@@ -11,6 +11,7 @@ export interface UserProfile {
 
 export interface UserRepository {
   findById(id: string): Promise<UserProfile | null>;
-  create(user: UserProfile): Promise<UserProfile>;
+  create(profile: Omit<UserProfile, 'createdAt' | 'updatedAt' | 'lastCreditReset'>): Promise<UserProfile>;
+  update(id: string, data: Partial<UserProfile>): Promise<void>;
   updateCredits(id: string, newBalance: number): Promise<void>;
 }

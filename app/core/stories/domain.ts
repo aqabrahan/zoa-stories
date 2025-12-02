@@ -28,6 +28,6 @@ export interface CreateStoryParams {
 export interface StoryRepository {
   create(story: Omit<Story, 'id' | 'createdAt' | 'updatedAt'>): Promise<Story>;
   findById(id: string): Promise<Story | null>;
+  findByUserId(userId: string): Promise<Story[]>;
   update(id: string, data: Partial<Story>): Promise<Story>;
-  findByUser(userId: string): Promise<Story[]>;
 }
