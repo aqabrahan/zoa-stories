@@ -49,8 +49,21 @@ export default function StoryView() {
   }, [shouldStream, initialStory.id]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 font-sans p-4 md:p-8 flex items-center justify-center">
-      <div className="max-w-4xl w-full bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl overflow-hidden border border-white/50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 font-sans p-4 md:p-8 flex items-center justify-center relative overflow-hidden">
+      {/* Background Watermark */}
+      {coverImage && (
+        <div
+          className="absolute inset-0 z-0 opacity-20 pointer-events-none"
+          style={{
+            backgroundImage: `url(${coverImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            //filter: 'blur(20px) saturate(1.5)',
+          }}
+        />
+      )}
+
+      <div className="max-w-4xl w-full bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl overflow-hidden border border-white/50 z-10 relative">
 
         {/* Hero / Cover Section */}
         <div className="relative h-64 md:h-80 bg-slate-100 group overflow-hidden">
