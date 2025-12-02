@@ -58,4 +58,18 @@ export class OpenAIService {
 
     return response.data?.[0]?.url || "";
   }
+
+  /**
+   * Generates audio from text using TTS-1.
+   */
+  async generateAudio(text: string): Promise<Buffer> {
+    const mp3 = await client.audio.speech.create({
+      model: "tts-1",
+      voice: "nova", // 'nova' is good for children stories
+      input: text,
+    });
+
+    const buffer = Buffer.from(await mp3.arrayBuffer());
+    return buffer;
+  }
 }

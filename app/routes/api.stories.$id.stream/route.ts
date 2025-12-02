@@ -2,6 +2,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { eventStream } from "remix-utils/sse/server";
 import { DrizzleStoryRepository } from "~/infrastructure/db/repositories/story.server";
 import { OpenAIService } from "~/infrastructure/ai/openai";
+import { SupabaseStorageService } from "~/infrastructure/storage/supabase";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const storyId = params.id;
@@ -9,6 +10,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const storyRepository = new DrizzleStoryRepository();
   const aiService = new OpenAIService();
+  const storageService = new SupabaseStorageService();
 
   const story = await storyRepository.findById(storyId);
   if (!story) return new Response("Story not found", { status: 404 });
@@ -49,13 +51,30 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           send({ data: JSON.stringify({ type: 'delta', content: chunk }) });
         }
 
-        // Update DB with full content
+        // 3. Update DB with full content
         await storyRepository.update(storyId, {
           content: fullContent,
-          status: 'completed',
+          status: 'completed', // We mark as completed even if audio/image are pending? Ideally yes, but maybe 'generating_audio'?
+          // Let's keep 'completed' for text, but maybe we need a separate status for audio?
+          // For now, we update content.
         });
 
-        // 3. Wait for Image Generation to finish (if it hasn't already)
+        // 4. Generate Audio (After text is ready)
+        // We do this BEFORE sending [DONE] but maybe in parallel with Image wait?
+        // Audio generation depends on full text.
+        try {
+          const audioBuffer = await aiService.generateAudio(fullContent);
+          const audioFilename = `${storyId}-${Date.now()}.mp3`;
+          console.log("🚀 ~ run ~ audioFilename:", audioFilename, audioBuffer)
+          const audioUrl = await storageService.uploadAudio(audioFilename, audioBuffer);
+
+          await storyRepository.update(storyId, { audioUrl });
+          send({ data: JSON.stringify({ type: 'audio', url: audioUrl }) });
+        } catch (audioErr) {
+          console.error("🚀 Audio generation failed:", audioErr);
+        }
+
+        // 5. Wait for Image Generation to finish
         await imagePromise;
 
         send({ data: JSON.stringify({ type: 'done' }) });
